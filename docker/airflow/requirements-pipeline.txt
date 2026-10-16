@@ -1,0 +1,17 @@
+# =============================================================================
+#  Dépendances du code SciPulse exécuté PAR les tâches Airflow
+#  Installées dans un virtualenv dédié (/opt/scipulse-venv) pour ne pas entrer
+#  en conflit avec les dépendances d'Airflow lui-même (dbt et GX épinglent
+#  beaucoup de paquets).
+# =============================================================================
+elasticsearch>=8.13,<9.0
+requests>=2.31
+boto3>=1.34
+minio>=7.2
+pandas>=2.1,<2.3
+numpy>=1.26,<2
+great-expectations>=0.18.12,<1.0
+scikit-learn>=1.4
+dbt-postgres>=1.7
+psycopg2-binary>=2.9
+python-dotenv>=1.0
