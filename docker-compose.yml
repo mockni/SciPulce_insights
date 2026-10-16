@@ -1,31 +1,29 @@
 ###############################################################################
-#  SciPulse — docker-compose.yml
-#  Stack complète : Elasticsearch · Logstash · Kibana · Airflow · PostgreSQL · MinIO
-#  Usage :  docker compose up -d --build
-#           docker compose --profile monitoring up -d filebeat   (optionnel, TP 8)
-#  Prérequis : Docker Desktop ≥ 4.x, 8 à 16 Go RAM alloués au daemon
+#  SciPulse & SciPulse Insights — docker-compose.yml
+#  Stack : Elasticsearch · Logstash · Kibana · Airflow · PostgreSQL · MinIO · Spark
+#
+#  Démarrage de zéro :   make up        (= docker compose up -d --build)
+#  Prérequis : Docker Desktop ≥ 4.x, 12 à 16 Go de RAM alloués au daemon
+#
+#  Architecture Medallion :
+#    🥉 Bronze  MinIO  arxiv-raw/ hn-raw/ citations-raw/        (JSON Lines bruts)
+#    🥈 Silver  MinIO  arxiv-clean/ hn-clean/ citations-clean/  (Parquet validé)
+#    🥇 Gold    Elasticsearch  arxiv-papers-enriched (Spark)    → Kibana
 ###############################################################################
 
 x-airflow-common: &airflow-common
   build:
     context: ./docker/airflow
   image: scipulse-airflow:2.9.3
-  # Linux : exporter AIRFLOW_UID=$(id -u) dans .env pour que les fichiers
-  # écrits par Airflow (logs, Data Docs, dbt/target) vous appartiennent
+  # Linux : AIRFLOW_UID=$(id -u) dans .env → les fichiers écrits vous appartiennent
   user: "${AIRFLOW_UID:-50000}:0"
   environment: &airflow-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    # API REST (basic auth) — ex. : curl -u admin:admin localhost:8080/api/v1/dags
     AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
-    # Connexions prédéfinies pour les DAGs
-    AIRFLOW_CONN_ELASTICSEARCH_DEFAULT: http://elasticsearch:9200
-    AIRFLOW_CONN_MINIO_DEFAULT: s3://minioadmin:minioadmin@?host=http%3A%2F%2Fminio%3A9000
-    AIRFLOW_CONN_POSTGRES_DWH: postgresql://scipulse:scipulse@postgres:5432/scipulse
     # Variables lues par le code SciPulse (src/config.py) : noms de services Docker
     ES_HOST: http://elasticsearch:9200
     KIBANA_HOST: http://kibana:5601
@@ -35,9 +33,16 @@ x-airflow-common: &airflow-common
     PG_PASSWORD: scipulse
     PG_DATABASE: scipulse
     MINIO_ENDPOINT: http://minio:9000
-    MINIO_ACCESS_KEY: minioadmin
-    MINIO_SECRET_KEY: minioadmin
+    MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+    MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+    SPARK_MASTER: spark://spark-master:7077
+    LAKE_URI: s3a://
     DATA_DIR: /opt/airflow/data
+    ARXIV_SOURCE_FILE: ${ARXIV_SOURCE_FILE:-/opt/airflow/data/arxiv-cs-subset-100k.json}
+    KAGGLE_USERNAME: ${KAGGLE_USERNAME:-}
+    KAGGLE_KEY: ${KAGGLE_KEY:-}
+    OPENALEX_API_KEY: ${OPENALEX_API_KEY:-}
+    OPENALEX_MAILTO: ${OPENALEX_MAILTO:-}
     SCIPULSE_LOG_DIR: /opt/airflow/logs/scipulse
     PYTHONPATH: /opt/airflow
     PYTHONDONTWRITEBYTECODE: '1'
@@ -49,7 +54,6 @@ x-airflow-common: &airflow-common
     - ./data:/opt/airflow/data
     - ./dbt:/opt/airflow/dbt
     - ./gx:/opt/airflow/gx
-    - ./kibana:/opt/airflow/kibana
   depends_on:
     postgres:
       condition: service_healthy
@@ -58,10 +62,19 @@ x-airflow-common: &airflow-common
   networks:
     - scipulse
 
+x-spark-common: &spark-common
+  build:
+    context: ./docker/spark
+  image: scipulse-spark:3.5.3
+  environment:
+    SPARK_NO_DAEMONIZE: 'true'
+  networks:
+    - scipulse
+
 services:
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  ELASTICSEARCH
+  #  ELASTICSEARCH — couche Gold (serving) + observabilité
   # ═══════════════════════════════════════════════════════════════════════════
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.4
@@ -85,7 +98,7 @@ services:
       - scipulse
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  LOGSTASH
+  #  LOGSTASH — collecte des logs Airflow (observabilité, hors données métier)
   # ═══════════════════════════════════════════════════════════════════════════
   logstash:
     image: docker.elastic.co/logstash/logstash:8.13.4
@@ -93,9 +106,10 @@ services:
     volumes:
       - ./docker/logstash/pipeline:/usr/share/logstash/pipeline:ro
       - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./data:/data:ro
+      - ./airflow/logs:/airflow-logs:ro
+      - logstash-data:/usr/share/logstash/data
     environment:
-      - "LS_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "LS_JAVA_OPTS=-Xms256m -Xmx512m"
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -103,7 +117,7 @@ services:
       - scipulse
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  KIBANA
+  #  KIBANA — dashboards (n'interroge que la couche Gold + pipeline-logs)
   # ═══════════════════════════════════════════════════════════════════════════
   kibana:
     image: docker.elastic.co/kibana/kibana:8.13.4
@@ -111,7 +125,6 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
       - xpack.security.enabled=false
-      # Clé requise par Kibana pour créer des règles d'alerte (TP 8, alerting)
       - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=scipulse-dev-only-encryption-key-32chars-min
     ports:
       - "5601:5601"
@@ -122,7 +135,7 @@ services:
       - scipulse
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  POSTGRESQL  (backend Airflow + entrepôt dbt)
+  #  POSTGRESQL — métastore Airflow + entrepôt dbt
   # ═══════════════════════════════════════════════════════════════════════════
   postgres:
     image: postgres:16-alpine
@@ -145,15 +158,15 @@ services:
       - scipulse
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  MINIO  (S3-compatible — landing zone)
+  #  MINIO — data lake Medallion (Bronze / Silver)
   # ═══════════════════════════════════════════════════════════════════════════
   minio:
     image: minio/minio:latest
     container_name: scipulse-minio
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
     ports:
       - "9000:9000"   # API S3
       - "9001:9001"   # Console web
@@ -162,7 +175,7 @@ services:
     networks:
       - scipulse
 
-  # Création automatique des buckets au démarrage
+  # Création des six buckets Medallion au démarrage (attend que MinIO réponde)
   minio-init:
     image: minio/mc:latest
     container_name: scipulse-minio-init
@@ -170,17 +183,41 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-        until mc alias set local http://minio:9000 minioadmin minioadmin; do sleep 2; done;
-        mc mb --ignore-existing local/arxiv-raw;
-        mc mb --ignore-existing local/hn-raw;
-        mc mb --ignore-existing local/processed;
-        echo '✅ Buckets créés avec succès';
+        until mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}; do sleep 2; done &&
+        for b in arxiv-raw hn-raw citations-raw arxiv-clean hn-clean citations-clean; do
+          mc mb --ignore-existing local/$$b;
+        done &&
+        echo '✅ Buckets Medallion créés'
       "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
     networks:
       - scipulse
 
   # ═══════════════════════════════════════════════════════════════════════════
-  #  AIRFLOW
+  #  SPARK — cluster standalone (Module 2 : SciPulse Insights)
+  #  Le driver tourne dans le conteneur Airflow (spark-submit en mode client).
+  # ═══════════════════════════════════════════════════════════════════════════
+  spark-master:
+    <<: *spark-common
+    container_name: scipulse-spark-master
+    command: ["spark-class", "org.apache.spark.deploy.master.Master",
+              "--host", "spark-master", "--port", "7077", "--webui-port", "8080"]
+    ports:
+      - "8090:8080"   # interface web du master
+      - "7077:7077"
+
+  spark-worker:
+    <<: *spark-common
+    container_name: scipulse-spark-worker
+    command: ["spark-class", "org.apache.spark.deploy.worker.Worker",
+              "--cores", "2", "--memory", "2g", "spark://spark-master:7077"]
+    depends_on:
+      - spark-master
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  #  AIRFLOW — orchestration Bronze → Silver → Gold
   # ═══════════════════════════════════════════════════════════════════════════
   airflow-init:
     <<: *airflow-common
@@ -189,15 +226,18 @@ services:
     command:
       - -c
       - |
+        mkdir -p /opt/airflow/logs/scipulse
         airflow db migrate
         airflow users create \
-          --username admin \
-          --firstname Admin \
-          --lastname SciPulse \
-          --role Admin \
+          --username "$${AIRFLOW_ADMIN_USER:-admin}" \
+          --firstname Admin --lastname SciPulse --role Admin \
           --email admin@scipulse.local \
-          --password admin || true
+          --password "$${AIRFLOW_ADMIN_PASSWORD:-admin}" || true
         echo "✅ Airflow initialisé"
+    environment:
+      <<: *airflow-env
+      AIRFLOW_ADMIN_USER: ${AIRFLOW_ADMIN_USER:-admin}
+      AIRFLOW_ADMIN_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-admin}
     restart: "no"
 
   airflow-webserver:
@@ -218,39 +258,17 @@ services:
     depends_on:
       airflow-init:
         condition: service_completed_successfully
+      spark-master:
+        condition: service_started
+      minio-init:
+        condition: service_completed_successfully
     restart: unless-stopped
 
-  # ═══════════════════════════════════════════════════════════════════════════
-  #  FILEBEAT (optionnel — TP 8, observabilité)
-  #  Envoie les logs des tâches Airflow dans l'index pipeline-logs-filebeat-*
-  #  Lancement : docker compose --profile monitoring up -d filebeat
-  # ═══════════════════════════════════════════════════════════════════════════
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.13.4
-    container_name: scipulse-filebeat
-    profiles: ["monitoring"]
-    user: root
-    command: ["filebeat", "-e", "--strict.perms=false"]
-    volumes:
-      - ./docker/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - ./airflow/logs:/var/log/airflow:ro
-      - ./logs:/var/log/scipulse:ro
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    networks:
-      - scipulse
-
-# ═════════════════════════════════════════════════════════════════════════════
-#  VOLUMES & RÉSEAUX
-# ═════════════════════════════════════════════════════════════════════════════
 volumes:
   es-data:
-    driver: local
   pg-data:
-    driver: local
   minio-data:
-    driver: local
+  logstash-data:
 
 networks:
   scipulse:
