@@ -180,3 +180,59 @@ def parse_authors(authors_str: str | None, authors_parsed=None) -> tuple[list[di
 
     flat = ", ".join(a["name"] for a in authors)
     return authors, flat
+
+
+# ── Clés de jointure (Silver) ────────────────────────────────────────────────
+
+_DOI_PREFIX_RE = re.compile(r"^(?:https?://)?(?:dx\.)?doi\.org/|^doi:\s*", re.IGNORECASE)
+_DOI_RE = re.compile(r"^10\.\d{4,9}/\S+$")
+ARXIV_DOI_PREFIX = "10.48550/arxiv."   # DOI DataCite attribué à chaque article ArXiv
+
+
+def normalize_doi(doi: str | None) -> str | None:
+    """
+    'https://doi.org/10.1145/ABC.123 ' → '10.1145/abc.123'
+    Minuscules, sans préfixe d'URL ; plusieurs DOI séparés par des espaces → le premier.
+    Retourne None si la valeur n'a pas la forme d'un DOI.
+    """
+    if not doi:
+        return None
+    value = _DOI_PREFIX_RE.sub("", str(doi).strip()).strip().lower()
+    value = value.split()[0] if value else value
+    return value if value and _DOI_RE.match(value) else None
+
+
+def arxiv_id_from_doi(doi: str | None) -> str | None:
+    """'10.48550/arxiv.2301.07041' → '2301.07041' (DOI DataCite d'ArXiv)."""
+    doi = normalize_doi(doi)
+    if doi and doi.startswith(ARXIV_DOI_PREFIX):
+        raw = doi[len(ARXIV_DOI_PREFIX):]
+        # Le DOI est en minuscules : on rétablit la sous-classe des anciens identifiants
+        # (« math.gt/0309136 » → « math.GT/0309136 »)
+        raw = re.sub(r"^([a-z\-]+)\.([a-z]{2})/", lambda m: f"{m.group(1)}.{m.group(2).upper()}/", raw)
+        return normalize_arxiv_id(raw)
+    return None
+
+
+def arxiv_doi(arxiv_id: str | None) -> str | None:
+    """'2301.07041' → '10.48550/arxiv.2301.07041'."""
+    arxiv_id = normalize_arxiv_id(arxiv_id)
+    return f"{ARXIV_DOI_PREFIX}{arxiv_id.lower()}" if arxiv_id else None
+
+
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def html_to_text(value: str | None) -> str | None:
+    """Texte HN (HTML échappé : « &#x2F; », <p>, <a>) → texte brut."""
+    if value is None:
+        return None
+    import html
+
+    text = _TAG_RE.sub(" ", html.unescape(str(value)).replace("<p>", "\n"))
+    return clean_text(html.unescape(text)) or None
+
+
+def matches_scope(categories, prefixes) -> bool:
+    """Vrai si au moins une catégorie commence par un des préfixes (cs., stat.ML…)."""
+    return any(cat.startswith(tuple(prefixes)) for cat in split_categories(categories))
