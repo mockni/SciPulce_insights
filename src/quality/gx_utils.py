@@ -5,20 +5,32 @@ Le contexte est un FileDataContext enraciné à la racine du projet :
   gx/expectations/            → suites (versionnées dans Git)
   gx/checkpoints/             → checkpoints
   gx/uncommitted/data_docs/   → rapports HTML (Data Docs, non versionnés)
+
+Chaque exécution publie aussi un événement `quality_check` (taux d'erreur) dans
+pipeline-logs, pour le dashboard de monitoring.
 """
 
 import logging
+import warnings
 
-import great_expectations as gx
+# Avertissements internes de GX 0.18 (dépréciations) : inutiles dans les logs Airflow
+warnings.filterwarnings("ignore", module="great_expectations")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*result_format.*")
+warnings.filterwarnings("ignore", message=".*parseString.*")
 
-from src.config import PROJECT_ROOT
+import great_expectations as gx  # noqa: E402
+
+from src.config import PROJECT_ROOT  # noqa: E402
+from src.monitoring.events import emit  # noqa: E402
 
 logging.getLogger("great_expectations").setLevel(logging.ERROR)
 
+EXIT_OK, EXIT_FAILED, EXIT_NO_DATA = 0, 1, 2
 
-def get_context():
-    """Contexte GX persistant (crée le dossier gx/ au premier appel)."""
-    context = gx.get_context(project_root_dir=str(PROJECT_ROOT))
+
+def get_context(ephemeral: bool = False):
+    """Contexte GX persistant (crée le dossier gx/ au premier appel) ; éphémère pour les tests."""
+    context = gx.get_context() if ephemeral else gx.get_context(project_root_dir=str(PROJECT_ROOT))
     try:  # pas de barres de progression dans les logs Airflow
         from great_expectations.data_context.types.base import ProgressBarsConfig
 
@@ -56,71 +68,73 @@ def run_suite(context, df, datasource_name: str, asset_name: str, suite_name: st
     return context, result
 
 
-def print_results(result, title: str = "RÉSULTATS DE LA VALIDATION ARXIV"):
+def validation_results(result) -> list:
+    run_results = list(result.run_results.values())
+    return run_results[0]["validation_result"]["results"] if run_results else []
+
+
+def summarize(result) -> dict:
+    results = validation_results(result)
+    failed = sum(1 for r in results if not r["success"])
+    return {
+        "success": bool(result.success),
+        "expectations_evaluated": len(results),
+        "expectations_failed": failed,
+        "error_rate": round(failed / len(results), 4) if results else 0.0,
+    }
+
+
+def publish(result, layer: str, source: str, suite: str, rows: int) -> dict:
+    """Publie le résultat dans pipeline-logs (taux d'erreur GX par couche et par source)."""
+    summary = summarize(result)
+    failed = [r["expectation_config"]["expectation_type"] + ":" +
+              str(r["expectation_config"]["kwargs"].get("column", "table"))
+              for r in validation_results(result) if not r["success"]]
+    emit("quality_check", layer=layer, source=source, suite=suite, rows=rows,
+         failed_expectations=failed or None, **summary)
+    return summary
+
+
+def print_results(result, title: str = "RÉSULTATS DE LA VALIDATION"):
     """Affiche les résultats de manière lisible dans le terminal."""
     print("\n" + "═" * 60)
     print(f"  {title}")
     print("═" * 60)
 
-    run_results = list(result.run_results.values())
-    if not run_results:
+    results_list = validation_results(result)
+    if not results_list:
         print("  ⚠️  Aucun résultat")
         return
 
-    validation_result = run_results[0]["validation_result"]
-    results_list = validation_result["results"]
-
-    success_count = 0
-    failure_count = 0
-
+    success_count = failure_count = 0
     for r in results_list:
-        success = r["success"]
         expectation_type = r["expectation_config"]["expectation_type"]
-        kwargs = r["expectation_config"]["kwargs"]
-
-        # Nom de la colonne s'il existe
-        column = kwargs.get("column", "—table—")
-
-        if success:
+        column = r["expectation_config"]["kwargs"].get("column", "—table—")
+        if r["success"]:
             success_count += 1
             icon = "✅"
         else:
             failure_count += 1
             icon = "❌"
-
-        # Nom simplifié de l'expectation
-        short_name = (
-            expectation_type.replace("expect_column_values_to_", "")
-            .replace("expect_column_", "")
-            .replace("expect_table_", "table:")
-        )
-
-        # Statistiques
-        result_detail = r.get("result", {}) or {}
-        unexpected_count = result_detail.get("unexpected_count")
-        unexpected_pct = result_detail.get("unexpected_percent")
-
+        short_name = (expectation_type.replace("expect_column_values_to_", "")
+                      .replace("expect_column_", "").replace("expect_table_", "table:"))
+        detail = r.get("result", {}) or {}
         stats = ""
-        if unexpected_count is not None:
-            stats = f" ({unexpected_count} non-conformes"
-            if unexpected_pct is not None:
-                stats += f", {unexpected_pct:.2f}%"
+        if detail.get("unexpected_count") is not None:
+            stats = f" ({detail['unexpected_count']} non-conformes"
+            if detail.get("unexpected_percent") is not None:
+                stats += f", {detail['unexpected_percent']:.2f}%"
             stats += ")"
-        elif result_detail.get("observed_value") is not None:
-            observed = result_detail["observed_value"]
-            if isinstance(observed, list):
-                observed = f"{len(observed)} colonnes"
-            stats = f" (observé : {observed})"
-
+        elif detail.get("observed_value") is not None:
+            observed = detail["observed_value"]
+            stats = f" (observé : {len(observed)} colonnes)" if isinstance(observed, list) else f" (observé : {observed})"
         print(f"  {icon} {column:<22} {short_name:<35} {stats}")
 
+    total = success_count + failure_count
     print(f"\n  {'─' * 56}")
     print(f"  ✅ Succès  : {success_count}")
     print(f"  ❌ Échecs  : {failure_count}")
-    total = success_count + failure_count
-    pct = success_count / total * 100 if total > 0 else 0
-    print(f"  📊 Score   : {pct:.0f}% ({success_count}/{total})")
-    print()
+    print(f"  📊 Score   : {success_count / total * 100:.0f}% ({success_count}/{total})\n")
 
 
 def build_and_show_docs(context) -> str | None:

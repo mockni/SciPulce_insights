@@ -109,6 +109,36 @@ fluent_datasources:
       hn_data:
         type: dataframe
         batch_metadata: {}
+  arxiv_bronze_pandas:
+    type: pandas
+    assets:
+      arxiv_bronze_data:
+        type: dataframe
+        batch_metadata: {}
+  arxiv_silver_pandas:
+    type: pandas
+    assets:
+      arxiv_silver_data:
+        type: dataframe
+        batch_metadata: {}
+  hn_silver_pandas:
+    type: pandas
+    assets:
+      hn_silver_data:
+        type: dataframe
+        batch_metadata: {}
+  hn_bronze_pandas:
+    type: pandas
+    assets:
+      hn_bronze_data:
+        type: dataframe
+        batch_metadata: {}
+  citations_silver_pandas:
+    type: pandas
+    assets:
+      citations_silver_data:
+        type: dataframe
+        batch_metadata: {}
 notebooks:
 progress_bars:
   globally: false

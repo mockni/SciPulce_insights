@@ -1,11 +1,11 @@
 {
   "data_asset_type": null,
-  "expectation_suite_name": "hn_quality_suite",
+  "expectation_suite_name": "hn_bronze_suite",
   "expectations": [
     {
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
-        "column": "hn_id"
+        "column": "id"
       },
       "meta": {}
     },
@@ -13,15 +13,6 @@
       "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
         "column": "type"
-      },
-      "meta": {}
-    },
-    {
-      "expectation_type": "expect_column_values_to_not_be_null",
-      "kwargs": {
-        "column": "title",
-        "condition_parser": "pandas",
-        "row_condition": "type==\"story\""
       },
       "meta": {}
     },
@@ -42,32 +33,50 @@
     {
       "expectation_type": "expect_column_values_to_be_between",
       "kwargs": {
-        "column": "score",
-        "min_value": 0
+        "column": "time",
+        "max_value": 1792266897,
+        "min_value": 1160418111
       },
       "meta": {}
     },
     {
       "expectation_type": "expect_column_values_to_be_between",
       "kwargs": {
-        "column": "time",
-        "max_value": 1792233890,
-        "min_value": 1160418111
+        "column": "score",
+        "min_value": 0
       },
       "meta": {}
     },
     {
-      "expectation_type": "expect_column_values_to_match_regex",
+      "expectation_type": "expect_column_values_to_not_be_null",
       "kwargs": {
-        "column": "arxiv_id_linked",
-        "regex": "^(?:\\d{4}\\.\\d{4,5}|[a-z\\-]+(?:\\.[A-Z]{2})?/\\d{7})$"
+        "column": "title",
+        "condition_parser": "pandas",
+        "mostly": 0.99,
+        "row_condition": "type==\"story\""
       },
       "meta": {}
     },
     {
-      "expectation_type": "expect_column_values_to_be_unique",
+      "expectation_type": "expect_column_values_to_be_null",
       "kwargs": {
-        "column": "hn_id"
+        "column": "deleted",
+        "mostly": 0.98
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_null",
+      "kwargs": {
+        "column": "dead",
+        "mostly": 0.98
+      },
+      "meta": {}
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "_fetched_at"
       },
       "meta": {}
     },
