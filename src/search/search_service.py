@@ -2,14 +2,14 @@
 SciPulse — Service de recherche full-text (TP 6, volet B)
 
 Encapsule les requêtes Elasticsearch avancées derrière une interface Python :
-  - full_text()          multi_match cross_fields + function_score (fraîcheur + popularité HN)
+  - full_text()          multi_match cross_fields + function_score (fraîcheur ; + score d'impact
+                         sur l'index Gold enrichi arxiv-papers-enriched)
   - phrase_search()      match_phrase avec slop
   - more_like_this()     articles similaires à un article du corpus
   - more_like_text()     articles similaires à un texte libre
   - significant_terms()  termes distinctifs d'un sous-ensemble (tendances émergentes)
   - suggest()            correction de saisie (phrase suggester)
   - autocomplete()       autocomplétion des titres (completion suggester)
-  - hn_discussions()     stories HN dont les commentaires contiennent un terme (has_child)
   - combined_search()    requête « tout-en-un » : recherche + highlight + aggs + suggestion
 
 Usage en ligne de commande (démo du Jour 5) :
@@ -24,21 +24,28 @@ import argparse
 
 from elasticsearch import Elasticsearch
 
-from src.config import ES_HOST, INDEX_ARXIV, INDEX_HN
+from src.config import ES_HOST, INDEX_ARXIV, INDEX_ENRICHED
 
 DATE_FIELD = "date_published"           # champ utilisé pour la fraîcheur et les filtres de date
 SOURCE_FIELDS = ["arxiv_id", "title", "primary_category", "date_published", "date_updated",
-                 "hn_score", "keywords"]
+                 "impact_score", "hn_score_total", "cited_by_count", "keywords"]
 TEXT_FIELDS = {"abstract", "title"}     # champs `text` → significant_text ; sinon significant_terms
 
 
 class SciPulseSearch:
-    """Façade de recherche sur l'index arxiv-papers."""
+    """
+    Façade de recherche sur la couche Gold :
+      - arxiv-papers (Module 1)            : recherche plein texte pondérée par la fraîcheur
+      - arxiv-papers-enriched (Module 2)   : + pondération par le score d'impact composite
+    """
 
-    def __init__(self, es_host: str = ES_HOST, index: str = INDEX_ARXIV, hn_index: str = INDEX_HN):
+    def __init__(self, es_host: str = ES_HOST, index: str = INDEX_ARXIV):
         self.es = Elasticsearch(es_host, request_timeout=30)
         self.index = index
-        self.hn_index = hn_index
+
+    @property
+    def enriched(self) -> bool:
+        return self.index == INDEX_ENRICHED
 
     # ─────────────────────────────────────────────────────────────────────────
     #  Briques de requête
@@ -46,14 +53,14 @@ class SciPulseSearch:
 
     @staticmethod
     def _filters(categories: list[str] | None = None, date_from: str | None = None,
-                 min_hn_score: int | None = None) -> list[dict]:
+                 min_impact: float | None = None) -> list[dict]:
         filters = []
         if categories:
             filters.append({"terms": {"primary_category": categories}})
         if date_from:
             filters.append({"range": {DATE_FIELD: {"gte": date_from}}})
-        if min_hn_score is not None:
-            filters.append({"range": {"hn_score": {"gte": min_hn_score}}})
+        if min_impact is not None:
+            filters.append({"range": {"impact_score": {"gte": min_impact}}})
         return filters
 
     @staticmethod
@@ -77,13 +84,13 @@ class SciPulseSearch:
         size: int = 10,
         categories: list[str] | None = None,
         date_from: str | None = None,
-        min_hn_score: int | None = None,
+        min_impact: float | None = None,
         boost_recent: bool = True,
         recency_scale: str = "365d",
     ) -> dict:
         """
         Recherche multi_match (titre ×3, mots-clés ×2, abstract) en cross_fields,
-        pondérée par la fraîcheur (decay gaussien) et la popularité HN (log1p).
+        pondérée par la fraîcheur (decay gaussien) et, sur l'index enrichi, par le score d'impact.
         """
         bool_query = {
             "must": [{
@@ -94,25 +101,25 @@ class SciPulseSearch:
                 }
             }]
         }
-        filters = self._filters(categories, date_from, min_hn_score)
+        filters = self._filters(categories, date_from, min_impact)
         if filters:
             bool_query["filter"] = filters
 
-        functions = [{
-            "field_value_factor": {"field": "hn_score", "factor": 1.2, "modifier": "log1p", "missing": 1}
-        }]
+        functions = []
+        if self.enriched:
+            # impact_score ∈ [0, 100] → facteur ln(2 + impact/10) ∈ [0,69 ; 2,48] : jamais nul,
+            # un article sans impact garde son score textuel (atténué) au lieu d'être éliminé
+            functions.append({"field_value_factor": {"field": "impact_score", "factor": 0.1,
+                                                     "modifier": "ln2p", "missing": 0}})
         if boost_recent:
             functions.append({"gauss": {DATE_FIELD: {"origin": "now", "scale": recency_scale, "decay": 0.5}}})
 
+        query = {"bool": bool_query}
+        if functions:
+            query = {"function_score": {"query": query, "functions": functions,
+                                        "score_mode": "multiply", "boost_mode": "multiply"}}
         body = {
-            "query": {
-                "function_score": {
-                    "query": {"bool": bool_query},
-                    "functions": functions,
-                    "score_mode": "multiply",
-                    "boost_mode": "multiply",
-                }
-            },
+            "query": query,
             "highlight": self._highlight(),
             "size": size,
             "_source": SOURCE_FIELDS,
@@ -236,30 +243,10 @@ class SciPulseSearch:
         }
         return self.es.search(index=self.index, body=body)
 
-    def hn_discussions(self, text: str, size: int = 5) -> dict:
-        """Stories HN dont au moins un commentaire contient `text` (requête has_child)."""
-        body = {
-            "query": {
-                "has_child": {
-                    "type": "comment",
-                    "query": {"match": {"text": text}},
-                    "score_mode": "max",
-                    "inner_hits": {"size": 2, "_source": ["by", "text"]},
-                }
-            },
-            "size": size,
-            "_source": ["title", "url", "score", "by", "arxiv_id_linked"],
-        }
-        return self.es.search(index=self.hn_index, body=body)
-
-    def top_hn_articles(self, size: int = 10) -> dict:
-        """Articles ArXiv les plus discutés sur Hacker News."""
-        body = {
-            "query": {"range": {"hn_score": {"gt": 0}}},
-            "sort": [{"hn_score": "desc"}],
-            "size": size,
-            "_source": SOURCE_FIELDS + ["hn_comments_count", "hn_item_ids"],
-        }
+    def top_impact(self, category: str | None = None, size: int = 10) -> dict:
+        """Articles au score d'impact le plus élevé (index enrichi)."""
+        query = {"term": {"primary_category": category}} if category else {"match_all": {}}
+        body = {"query": query, "sort": [{"impact_score": "desc"}], "size": size, "_source": SOURCE_FIELDS}
         return self.es.search(index=self.index, body=body)
 
     def combined_search(
@@ -293,8 +280,9 @@ class SciPulseSearch:
         if filters:
             bool_query["filter"] = filters
 
-        # Clause should : bonus si score HN
-        bool_query["should"] = [{"exists": {"field": "hn_score"}}]
+        # Clause should : bonus si l'article a fait parler de lui sur Hacker News (index enrichi)
+        if self.enriched:
+            bool_query["should"] = [{"term": {"has_hn": True}}]
 
         # Construire la requête
         if boost_recent:
@@ -371,10 +359,12 @@ class SciPulseSearch:
             title = (src.get("title") or "?")[:70]
             cat = src.get("primary_category", "?")
             date = (src.get(DATE_FIELD) or src.get("date_updated") or "?")[:10]
-            hn = src.get("hn_score")
+            hn = src.get("hn_score_total")
 
             lines.append(f"  {i:>2}. [{score:.2f}] {title}")
-            lines.append(f"      {cat} | {date}" + (f" | HN:{hn}" if hn else ""))
+            impact = src.get("impact_score")
+            lines.append(f"      {cat} | {date}" + (f" | HN:{hn}" if hn else "")
+                         + (f" | impact:{impact:.1f}" if impact is not None else ""))
 
             # Highlight
             hl = hit.get("highlight", {})
