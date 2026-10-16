@@ -1,0 +1,19 @@
+# =============================================================================
+#  Connexion dbt → PostgreSQL
+#  Les valeurs viennent des variables d'environnement (src/config.py, .env) :
+#    - depuis l'hôte      : PG_HOST absent → localhost
+#    - depuis Airflow     : PG_HOST=postgres (défini dans docker-compose.yml)
+#  Usage : cd dbt && dbt debug   (profiles.yml est lu dans le dossier courant)
+# =============================================================================
+scipulse:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PG_HOST', 'localhost') }}"
+      port: "{{ env_var('PG_PORT', '5432') | as_number }}"
+      user: "{{ env_var('PG_USER', 'scipulse') }}"
+      password: "{{ env_var('PG_PASSWORD', 'scipulse') }}"
+      dbname: "{{ env_var('PG_DATABASE', 'scipulse') }}"
+      schema: public
+      threads: 4

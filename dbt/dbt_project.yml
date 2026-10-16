@@ -1,0 +1,32 @@
+# =============================================================================
+#  SciPulse — projet dbt (TP 5)
+#  Lignage : public.arxiv_papers_raw (source, chargée par load_to_postgres.py)
+#              └─ staging.stg_arxiv_papers (vue)
+#                    ├─ marts.fct_publications_par_mois (table)
+#                    ├─ marts.fct_auteurs_prolifiques   (table)
+#                    └─ marts.dim_categories            (table, + seed arxiv_category_labels)
+# =============================================================================
+name: scipulse
+version: "1.0.0"
+config-version: 2
+profile: scipulse
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  scipulse:
+    staging:
+      +materialized: view
+      +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  scipulse:
+    +schema: staging

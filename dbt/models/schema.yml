@@ -1,0 +1,75 @@
+version: 2
+
+# =============================================================================
+#  Sources : tables existantes, non gérées par dbt
+# =============================================================================
+sources:
+  - name: raw
+    description: "Couche brute chargée depuis Elasticsearch par src/transformation/load_to_postgres.py"
+    schema: public
+    tables:
+      - name: arxiv_papers_raw
+        description: "Miroir tabulaire de l'index arxiv-papers (toutes colonnes en TEXT)"
+        columns:
+          - name: arxiv_id
+            tests: [not_null, unique]
+
+# =============================================================================
+#  Seeds
+# =============================================================================
+seeds:
+  - name: arxiv_category_labels
+    description: "Libellés officiels des catégories ArXiv (taxonomie arxiv.org)"
+    columns:
+      - name: category_code
+        tests: [not_null, unique]
+
+# =============================================================================
+#  Modèles
+# =============================================================================
+models:
+  - name: stg_arxiv_papers
+    description: "Articles ArXiv nettoyés et typés (vue de staging)"
+    columns:
+      - name: arxiv_id
+        description: "Identifiant ArXiv (clé primaire)"
+        tests: [not_null, unique]
+      - name: primary_category
+        description: "Première catégorie de la liste"
+        tests: [not_null]
+      - name: date_published
+        description: "Date de la version v1 (à défaut : date de mise à jour)"
+        tests: [not_null]
+      - name: abstract_length
+        tests: [not_null]
+
+  - name: fct_publications_par_mois
+    description: "Nombre de publications par mois et par catégorie primaire"
+    columns:
+      - name: mois
+        tests: [not_null]
+      - name: primary_category
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_categories')
+              field: category_code
+      - name: nb_publications
+        tests: [not_null]
+
+  - name: fct_auteurs_prolifiques
+    description: "Classement des auteurs par nombre de publications et diversité"
+    columns:
+      - name: author_name
+        tests: [not_null, unique]
+      - name: nb_publications
+        tests:
+          - not_null
+
+  - name: dim_categories
+    description: "Dimension des catégories ArXiv (domaine / sous-domaine / libellé / volumes)"
+    columns:
+      - name: category_code
+        tests: [not_null, unique]
+      - name: domaine
+        tests: [not_null]
