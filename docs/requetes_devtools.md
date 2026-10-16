@@ -1,7 +1,8 @@
 # Carnet de requêtes Kibana Dev Tools — SciPulse
 
-Requêtes prêtes à copier dans **Kibana → Management → Dev Tools**.
-Partie 1 : requêtes du TP 6 adaptées au mapping du projet. Partie 2 : corrigé des exercices `EXC-06E`.
+Requêtes prêtes à copier dans **Kibana → Management → Dev Tools**, sur la couche Gold :
+`arxiv-papers` (Module 1) et `arxiv-papers-enriched` (Module 2 : mêmes champs + citations, signal HN,
+mots-clés TF-IDF et score d'impact). Partie 1 : requêtes de fouille de texte. Partie 2 : corrigé des exercices `EXC-06E`.
 
 > Deux adaptations par rapport à l'énoncé, liées au mapping réel :
 > - **`significant_terms` sur `abstract` échoue** (« Fielddata is disabled on [abstract] ») car `abstract` est un champ `text`.
@@ -56,37 +57,37 @@ GET /arxiv-papers/_search
 ### 2. Requête `bool` (exercice : cs.CV, « object detection », 2023+)
 
 ```
-GET /arxiv-papers/_search
+GET /arxiv-papers-enriched/_search
 {
   "query": {
     "bool": {
       "must":     [ { "multi_match": { "query": "object detection", "fields": ["title^3", "abstract"], "type": "cross_fields" } } ],
       "filter":   [ { "term": { "primary_category": "cs.CV" } }, { "range": { "date_published": { "gte": "2023-01-01" } } } ],
-      "should":   [ { "exists": { "field": "hn_score" } } ],
+      "should":   [ { "term": { "has_hn": true } } ],
       "must_not": [ { "match": { "title": "survey review" } } ]
     }
   },
-  "size": 5, "_source": ["title", "primary_category", "date_published", "hn_score"]
+  "size": 5, "_source": ["title", "primary_category", "date_published", "hn_score_total"]
 }
 ```
 
-### 3. `function_score` : fraîcheur + popularité HN
+### 3. `function_score` : fraîcheur + score d'impact (index enrichi)
 
 ```
-GET /arxiv-papers/_search
+GET /arxiv-papers-enriched/_search
 {
   "query": {
     "function_score": {
       "query": { "multi_match": { "query": "large language model", "fields": ["title^3", "abstract"], "type": "cross_fields" } },
       "functions": [
         { "gauss": { "date_published": { "origin": "now", "scale": "365d", "decay": 0.5 } } },
-        { "field_value_factor": { "field": "hn_score", "factor": 1.2, "modifier": "log1p", "missing": 1 } }
+        { "field_value_factor": { "field": "impact_score", "factor": 0.1, "modifier": "ln2p", "missing": 0 } }
       ],
       "score_mode": "multiply",
       "boost_mode": "multiply"
     }
   },
-  "size": 5, "_source": ["title", "date_published", "hn_score"], "explain": false
+  "size": 5, "_source": ["title", "date_published", "impact_score", "hn_score_total"], "explain": false
 }
 ```
 
@@ -164,10 +165,11 @@ GET /arxiv-papers/_search
 }
 ```
 
-Sur les mots-clés TF-IDF (`keyword`) — comparer `terms` (fréquents) et `significant_terms` (distinctifs) :
+Sur les mots-clés TF-IDF calculés par Spark MLlib (`keyword`, index enrichi) — comparer `terms`
+(fréquents) et `significant_terms` (distinctifs) :
 
 ```
-GET /arxiv-papers/_search
+GET /arxiv-papers-enriched/_search
 {
   "size": 0,
   "query": { "bool": { "filter": [ { "term": { "primary_category": "cs.AI" } }, { "range": { "date_published": { "gte": "2023-01-01" } } } ] } },
@@ -178,24 +180,40 @@ GET /arxiv-papers/_search
 }
 ```
 
-### 8. Parent-child sur Hacker News
+### 8. Cas d'usage du dashboard augmenté (index enrichi)
 
-Les commentaires sont indexés si le poller tourne avec `--with-comments N` (c'est le cas dans le DAG).
-
+Très cités, jamais mentionnés sur Hacker News :
 ```
-GET /hn-items/_search
-{ "size": 0, "aggs": { "par_type": { "terms": { "field": "type" } }, "par_format": { "terms": { "field": "post_type" } } } }
+GET /arxiv-papers-enriched/_search
+{ "query": { "term": { "segment": "academic_only" } }, "sort": [ { "cited_by_count": "desc" } ],
+  "_source": ["title", "primary_category", "cited_by_count", "citation_percentile"], "size": 10 }
+```
 
-GET /hn-items/_search
+Viraux sur Hacker News mais peu cités :
+```
+GET /arxiv-papers-enriched/_search
+{ "query": { "term": { "segment": "viral_low_citations" } }, "sort": [ { "hn_score_total": "desc" } ],
+  "_source": ["title", "hn_score_total", "hn_comments_total", "cited_by_count"], "size": 10 }
+```
+
+Sous-domaines en croissance rapide selon les deux métriques :
+```
+GET /arxiv-papers-enriched/_search
 {
-  "query": { "has_child": { "type": "comment", "query": { "match": { "text": "interesting" } }, "score_mode": "max",
-                            "inner_hits": { "size": 2, "_source": ["by", "text"] } } },
-  "size": 5, "_source": ["title", "score", "by"]
+  "size": 0,
+  "query": { "range": { "year_published": { "gte": 2022 } } },
+  "aggs": {
+    "par_categorie": {
+      "terms": { "field": "primary_category", "size": 10, "order": { "impact_moyen": "desc" } },
+      "aggs": {
+        "impact_moyen":   { "avg": { "field": "impact_score" } },
+        "croissance_max": { "max": { "field": "category_yoy_growth" } },
+        "velocite":       { "avg": { "field": "category_avg_velocity" } },
+        "sur_hn":         { "filter": { "term": { "has_hn": true } } }
+      }
+    }
+  }
 }
-
-GET /hn-items/_search
-{ "query": { "exists": { "field": "arxiv_id_linked" } }, "size": 10,
-  "_source": ["title", "url", "arxiv_id_linked", "score"], "sort": [ { "score": "desc" } ] }
 ```
 
 ---
@@ -203,9 +221,9 @@ GET /hn-items/_search
 ## Partie 2 — Corrigé des exercices `EXC-06E`
 
 Les énoncés citent les champs du dump brut (`update_date`, `authors_parsed`, `submitter`, `versions`).
-Dans le projet, `update_date` est devenu **`date_updated`** (renommé par Logstash). Les champs `authors_parsed`,
-`submitter` et `versions` n'existent que dans l'index brut **`arxiv-papers-raw`** (mapping dynamique) ;
-quand c'est utile, l'équivalent sur `arxiv-papers` est donné.
+Dans l'architecture Medallion, les données brutes restent dans MinIO (Bronze) : l'index `arxiv-papers` contient
+les champs nettoyés du Silver — `update_date` → **`date_updated`**, `authors_parsed` → **`authors`** (nested) et
+**`authors_flat`**, `versions` → **`versions_count`**, `submitter` → **`submitter`** (text + keyword).
 
 ### A — Briques unitaires
 
@@ -245,16 +263,11 @@ GET /arxiv-papers/_search
 { "query": { "range": { "date_updated": { "gte": "2020-01-01", "lte": "2020-12-31" } } } }
 ```
 
-**7. Wildcard (auteurs commençant par « Ben »)** — sur l'index brut, chaque élément de `authors_parsed` est indexé
-en `keyword` (sensible à la casse) :
-```
-GET /arxiv-papers-raw/_search
-{ "query": { "wildcard": { "authors_parsed.keyword": { "value": "Ben*" } } }, "_source": ["title", "authors"] }
-```
-Équivalent sur l'index optimisé (auteurs `nested`) :
+**7. Wildcard (auteurs dont un nom commence par « Ben »)** — auteurs `nested` :
 ```
 GET /arxiv-papers/_search
-{ "query": { "nested": { "path": "authors", "query": { "wildcard": { "authors.name.keyword": { "value": "*Ben*" } } } } } }
+{ "query": { "nested": { "path": "authors", "query": { "wildcard": { "authors.name.keyword": { "value": "Ben*" } } } } },
+  "_source": ["title", "authors_flat"] }
 ```
 
 **8. Exists**
@@ -336,11 +349,11 @@ GET /arxiv-papers/_search
 
 ### C — Requêtes avancées
 
-**16. Multi-match cross_fields** (index brut : `authors_parsed` et `submitter` y existent)
+**16. Multi-match cross_fields**
 ```
-GET /arxiv-papers-raw/_search
+GET /arxiv-papers/_search
 { "query": { "multi_match": { "query": "Yoshua Bengio", "type": "cross_fields",
-                              "fields": ["authors_parsed", "submitter"], "analyzer": "standard", "operator": "and" } } }
+                              "fields": ["authors_flat", "submitter"], "analyzer": "standard", "operator": "and" } } }
 ```
 `best_fields` prend le score du **meilleur champ** : adapté quand tous les termes doivent se trouver dans un même champ
 (« deep learning » dans le titre). `cross_fields` traite les champs comme **un seul grand champ** : adapté quand les termes
@@ -372,8 +385,7 @@ GET /arxiv-papers/_search
   }
 }
 ```
-Sur l'index brut (mapping dynamique), on compte les valeurs distinctes de `versions.version` :
-`doc.containsKey('versions.version.keyword') ? doc['versions.version.keyword'].size() : 1`.
+(`versions_count` est calculé au Silver à partir du tableau `versions` du dump.)
 
 **19. PIT + search_after (pagination profonde)**
 ```
