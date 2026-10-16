@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "description": "SciPulse — alerte si plus de 20 % des tâches Airflow ont échoué sur les 15 dernières minutes",
+    "threshold": 0.2
+  },
+  "trigger": { "schedule": { "interval": "5m" } },
+  "input": {
+    "search": {
+      "request": {
+        "indices": ["pipeline-logs"],
+        "body": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                { "term": { "type": "airflow_task" } },
+                { "range": { "@timestamp": { "gte": "now-15m" } } }
+              ]
+            }
+          },
+          "aggs": {
+            "total": { "value_count": { "field": "task_id" } },
+            "failed": { "filter": { "term": { "state": "failed" } } }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "script": {
+      "source": "def total = ctx.payload.aggregations.total.value; def failed = ctx.payload.aggregations.failed.doc_count; return total > 0 && (failed * 1.0 / total) > ctx.metadata.threshold;"
+    }
+  },
+  "actions": {
+    "log_error": {
+      "logging": {
+        "level": "error",
+        "text": "SciPulse : {{ctx.payload.aggregations.failed.doc_count}} tâche(s) Airflow en échec sur {{ctx.payload.aggregations.total.value}} ces 15 dernières minutes"
+      }
+    },
+    "index_alert": {
+      "transform": {
+        "script": "return ['type': 'alert', 'alert': 'pipeline_error_rate', 'failed': ctx.payload.aggregations.failed.doc_count, 'total': ctx.payload.aggregations.total.value]"
+      },
+      "index": {
+        "index": "pipeline-logs",
+        "execution_time_field": "@timestamp"
+      }
+    }
+  }
+}
