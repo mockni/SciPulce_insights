@@ -1,5 +1,6 @@
 -- =============================================================================
 --  stg_arxiv_papers.sql — couche staging (vue)
+--  Source : ArXiv Silver (Parquet MinIO) chargé par src/transformation/load_to_postgres.py
 --  - filtre les lignes sans arxiv_id ni abstract
 --  - type les colonnes (la couche raw est 100 % TEXT)
 --  - extrait la catégorie primaire, le domaine et des métriques simples
@@ -20,9 +21,7 @@ cleaned as (
         -- les dates arrivent au format ISO 8601 (2023-02-07T00:00:00.000Z)
         (left(date_published, 10))::date                                    as date_published,
         (left(date_updated, 10))::date                                      as date_updated,
-        nullif(doi, '')                                                     as doi,
-        nullif(keywords, '')                                                as keywords,
-        round(hn_score::numeric)::integer                                   as hn_score
+        nullif(doi, '')                                                     as doi
     from source
     where arxiv_id is not null
       and abstract is not null
@@ -40,8 +39,6 @@ select
     date_updated,
     extract(year from coalesce(date_published, date_updated))::int          as annee_publication,
     doi,
-    keywords,
-    hn_score,
     length(abstract)                                                         as abstract_length,
     coalesce(array_length(string_to_array(categories, ' '), 1), 0)          as nb_categories,
     coalesce(array_length(string_to_array(authors_flat, ','), 1), 0)        as nb_auteurs
