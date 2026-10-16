@@ -1,8 +1,11 @@
-"""Cohérence des mappings (TP 3) avec le code qui les utilise."""
+"""Cohérence des mappings Elasticsearch avec le code qui les alimente."""
 
+from src.silver.schemas import ARXIV_SCHEMA
+from src.spark.insights_job import GOLD_COLUMNS
 from src.utils.mappings import (
+    ARXIV_PROPERTIES,
     ARXIV_SETTINGS,
-    HN_SETTINGS,
+    ENRICHED_PROPERTIES,
     INDEX_DEFINITIONS,
     SCIENTIFIC_SYNONYMS,
 )
@@ -23,10 +26,9 @@ def test_synonyms_contain_no_stopwords():
 
 def test_custom_analyzers_reference_declared_filters():
     analysis = ARXIV_SETTINGS["settings"]["analysis"]
-    builtin = {"lowercase", "stop", "porter_stem", "asciifolding"}
     for name, analyzer in analysis["analyzer"].items():
         for f in analyzer["filter"]:
-            assert f in analysis["filter"] or f in builtin, f"{name} → filtre inconnu {f}"
+            assert f in analysis["filter"] or f in {"lowercase"}, f"{name} → filtre inconnu {f}"
 
 
 def test_synonyms_before_stemmer():
@@ -34,20 +36,25 @@ def test_synonyms_before_stemmer():
     assert chain.index("scientific_synonyms") < chain.index("english_stemmer")
 
 
-def test_fields_used_by_search_service_exist():
-    props = ARXIV_SETTINGS["mappings"]["properties"]
+def test_gold_partial_index_covers_silver_schema():
+    """Chaque champ du mapping arxiv-papers existe dans le schéma Silver (index_arxiv les copie)."""
+    silver_fields = {f.name for f in ARXIV_SCHEMA}
+    assert set(ARXIV_PROPERTIES) <= silver_fields
+
+
+def test_enriched_mapping_matches_spark_output():
+    """Le DataFrame Gold écrit par Spark et le mapping arxiv-papers-enriched sont alignés."""
+    assert set(GOLD_COLUMNS) <= set(ENRICHED_PROPERTIES), set(GOLD_COLUMNS) - set(ENRICHED_PROPERTIES)
+    for field in ("impact_score", "segment", "cited_by_count", "hn_score_total", "keywords"):
+        assert field in GOLD_COLUMNS
+
+
+def test_search_fields():
+    props = ARXIV_PROPERTIES
     assert props["title"]["fields"]["suggest"]["type"] == "completion"
     assert props["title"]["fields"]["trigram"]["analyzer"] == "trigram"
     assert props["abstract"]["term_vector"] == "with_positions_offsets"
     assert props["authors"]["type"] == "nested"
-    for field in ["keywords", "hn_score", "hn_comments_count", "date_published", "primary_category"]:
-        assert field in props
-
-
-def test_hn_mapping_join_and_epoch():
-    props = HN_SETTINGS["mappings"]["properties"]
-    assert props["relation"] == {"type": "join", "relations": {"story": "comment"}}
-    assert props["time"]["format"] == "epoch_second"
 
 
 def test_all_indexes_have_single_shard_no_replica():

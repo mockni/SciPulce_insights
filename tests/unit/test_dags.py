@@ -28,19 +28,30 @@ def test_no_import_errors(dagbag):
     assert dagbag.import_errors == {}
 
 
-def test_arxiv_pipeline_order(dagbag):
+def test_arxiv_pipeline_medallion_order(dagbag):
     dag = dagbag.dags["scipulse_arxiv_pipeline"]
     order = [t.task_id for t in dag.topological_sort()]
-    expected = ["download_arxiv_dump", "validate_raw_arxiv", "ingest_arxiv_logstash", "reindex_arxiv",
-                "clean_arxiv", "transform_dbt", "enrich_arxiv_python", "validate_enriched"]
-    assert [t for t in order if t in expected] == expected
-    assert dag.schedule_interval is None
+    chain = ["bronze_arxiv", "validate_bronze_arxiv", "silver_arxiv", "validate_silver_arxiv",
+             "bronze_citations", "silver_citations", "validate_silver_citations", "spark_insights"]
+    assert [t for t in order if t in chain] == chain
+    # La couche Gold n'est alimentée qu'après la validation Silver (circuit breaker)
+    for gold in ("gold_index_arxiv", "spark_insights", "transform_dbt"):
+        assert "validate_silver_arxiv" in dag.get_task(gold).upstream_task_ids or \
+            "validate_silver_citations" in dag.get_task(gold).upstream_task_ids
+    assert dag.get_task("collect_pipeline_metrics").trigger_rule == "all_done"
+
+
+def test_spark_task_renders_valid_shell(dagbag):
+    cmd = dagbag.dags["scipulse_arxiv_pipeline"].get_task("spark_insights").bash_command
+    assert "awk '{print $1}'" in cmd and "--driver-class-path" in cmd and "insights_job.py" in cmd
 
 
 def test_hn_poller_every_5_minutes(dagbag):
     dag = dagbag.dags["scipulse_hn_poller"]
     assert dag.schedule_interval == "*/5 * * * *"
     assert dag.max_active_runs == 1
+    order = [t.task_id for t in dag.topological_sort()]
+    assert order[:4] == ["bronze_hn", "validate_bronze_hn", "silver_hn", "validate_silver_hn"]
 
 
 def test_monitoring_callbacks_never_raise():

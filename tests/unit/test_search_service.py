@@ -50,18 +50,22 @@ class TestSciPulseSearch:
         body = sent_body(mock_es)
         assert "abstract" in body["highlight"]["fields"]
 
-    def test_full_text_with_hn_filter(self, search, mock_es):
-        search.full_text("llm", min_hn_score=100)
-        filters = sent_body(mock_es)["query"]["function_score"]["query"]["bool"]["filter"]
-        assert {"range": {"hn_score": {"gte": 100}}} in filters
+    def test_full_text_impact_boost_only_on_enriched_index(self, search, mock_es):
+        search.full_text("llm", boost_recent=False)
+        assert "bool" in sent_body(mock_es)["query"]               # arxiv-papers : pas de score d'impact
+        search.index = "arxiv-papers-enriched"
+        search.full_text("llm", min_impact=50, boost_recent=False)
+        fs = sent_body(mock_es)["query"]["function_score"]
+        factor = fs["functions"][0]["field_value_factor"]
+        assert factor["field"] == "impact_score" and factor["modifier"] == "ln2p"   # jamais nul
+        assert {"range": {"impact_score": {"gte": 50}}} in fs["query"]["bool"]["filter"]
 
     def test_full_text_recency_decay(self, search, mock_es):
         search.full_text("diffusion", boost_recent=True)
         functions = sent_body(mock_es)["query"]["function_score"]["functions"]
         assert any("gauss" in f for f in functions)
         search.full_text("diffusion", boost_recent=False)
-        functions = sent_body(mock_es)["query"]["function_score"]["functions"]
-        assert not any("gauss" in f for f in functions)
+        assert "function_score" not in sent_body(mock_es)["query"]
 
     def test_mlt_uses_correct_id(self, search, mock_es):
         search.more_like_this("1706.03762")
@@ -92,10 +96,12 @@ class TestSciPulseSearch:
         match_phrase = sent_body(mock_es)["query"]["match_phrase"]["abstract"]
         assert match_phrase == {"query": "neural network architecture", "slop": 2}
 
-    def test_hn_discussions_uses_has_child(self, search, mock_es):
-        search.hn_discussions("breakthrough")
-        assert mock_es.search.call_args[1]["index"] == "hn-items"
-        assert sent_body(mock_es)["query"]["has_child"]["type"] == "comment"
+    def test_top_impact_sorts_by_score(self, search, mock_es):
+        search.index = "arxiv-papers-enriched"
+        search.top_impact(category="cs.LG")
+        body = sent_body(mock_es)
+        assert body["sort"] == [{"impact_score": "desc"}]
+        assert body["query"] == {"term": {"primary_category": "cs.LG"}}
 
 
 class TestCombinedSearch:
@@ -160,7 +166,8 @@ class TestFormatResults:
                 "hits": [{
                     "_score": 12.5,
                     "_source": {"title": "Attention Is All You Need", "primary_category": "cs.CL",
-                                "date_published": "2017-06-12T17:57:34.000Z", "hn_score": 120},
+                                "date_published": "2017-06-12T17:57:34.000Z", "hn_score_total": 120,
+                                "impact_score": 81.2},
                     "highlight": {"abstract": ["the <mark>Transformer</mark> architecture"]},
                 }],
             },
@@ -173,7 +180,7 @@ class TestFormatResults:
         }
         text = SciPulseSearch.format_results(response)
         assert "Attention Is All You Need" in text
-        assert "HN:120" in text
+        assert "HN:120" in text and "impact:81.2" in text
         assert "cs.CL" in text
         assert "transformer" in text
         assert "Vouliez-vous dire : transformer attention" in text

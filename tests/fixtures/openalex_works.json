@@ -1,0 +1,2312 @@
+[
+ {
+  "id": "https://openalex.org/W3000000000",
+  "doi": "https://doi.org/10.48550/arXiv.1701.20005",
+  "title": "Work for 1701.20005",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 9,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 2
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 2
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000000",
+   "doi": "https://doi.org/10.48550/arXiv.1701.20005"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000001",
+  "doi": "https://doi.org/10.48550/arXiv.1702.20001",
+  "title": "Work for 1702.20001",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 23,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000001",
+   "doi": "https://doi.org/10.48550/arXiv.1702.20001"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000002",
+  "doi": "https://doi.org/10.48550/arXiv.1703.20011",
+  "title": "Work for 1703.20011",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 12,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000002",
+   "doi": "https://doi.org/10.48550/arXiv.1703.20011"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000003",
+  "doi": "https://doi.org/10.48550/arXiv.1704.20002",
+  "title": "Work for 1704.20002",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 20,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000003",
+   "doi": "https://doi.org/10.48550/arXiv.1704.20002"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000004",
+  "doi": "https://doi.org/10.48550/arXiv.1706.03762",
+  "title": "Work for 1706.03762",
+  "type": "preprint",
+  "publication_year": 2017,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 120000,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 30000
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 30000
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000004",
+   "doi": "https://doi.org/10.48550/arXiv.1706.03762"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000005",
+  "doi": "https://doi.org/10.48550/arXiv.1706.20007",
+  "title": "Work for 1706.20007",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 17,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000005",
+   "doi": "https://doi.org/10.48550/arXiv.1706.20007"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000006",
+  "doi": "https://doi.org/10.48550/arXiv.1706.20008",
+  "title": "Work for 1706.20008",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 27,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 6
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 6
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000006",
+   "doi": "https://doi.org/10.48550/arXiv.1706.20008"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000007",
+  "doi": "https://doi.org/10.48550/arXiv.1706.20010",
+  "title": "Work for 1706.20010",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 20,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000007",
+   "doi": "https://doi.org/10.48550/arXiv.1706.20010"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000008",
+  "doi": "https://doi.org/10.48550/arXiv.1709.20009",
+  "title": "Work for 1709.20009",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 5,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000008",
+   "doi": "https://doi.org/10.48550/arXiv.1709.20009"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000009",
+  "doi": "https://doi.org/10.48550/arXiv.1710.20004",
+  "title": "Work for 1710.20004",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 34,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 8
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 8
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000009",
+   "doi": "https://doi.org/10.48550/arXiv.1710.20004"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000010",
+  "doi": "https://doi.org/10.48550/arXiv.1711.20003",
+  "title": "Work for 1711.20003",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 18,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000010",
+   "doi": "https://doi.org/10.48550/arXiv.1711.20003"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000011",
+  "doi": "https://doi.org/10.48550/arXiv.1711.20012",
+  "title": "Work for 1711.20012",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 31,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000011",
+   "doi": "https://doi.org/10.48550/arXiv.1711.20012"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000012",
+  "doi": "https://doi.org/10.48550/arXiv.1712.20006",
+  "title": "Work for 1712.20006",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 22,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000012",
+   "doi": "https://doi.org/10.48550/arXiv.1712.20006"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000013",
+  "doi": "https://doi.org/10.48550/arXiv.2101.20057",
+  "title": "Work for 2101.20057",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 23,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000013",
+   "doi": "https://doi.org/10.48550/arXiv.2101.20057"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000014",
+  "doi": "https://doi.org/10.48550/arXiv.2101.20061",
+  "title": "Work for 2101.20061",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 6,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000014",
+   "doi": "https://doi.org/10.48550/arXiv.2101.20061"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000015",
+  "doi": "https://doi.org/10.48550/arXiv.2103.20062",
+  "title": "Work for 2103.20062",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 11,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 2
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 2
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000015",
+   "doi": "https://doi.org/10.48550/arXiv.2103.20062"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000016",
+  "doi": "https://doi.org/10.48550/arXiv.2104.20056",
+  "title": "Work for 2104.20056",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 29,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000016",
+   "doi": "https://doi.org/10.48550/arXiv.2104.20056"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000017",
+  "doi": "https://doi.org/10.48550/arXiv.2106.20053",
+  "title": "Work for 2106.20053",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 16,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000017",
+   "doi": "https://doi.org/10.48550/arXiv.2106.20053"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000018",
+  "doi": "https://doi.org/10.48550/arXiv.2106.20055",
+  "title": "Work for 2106.20055",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 32,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 8
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 8
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000018",
+   "doi": "https://doi.org/10.48550/arXiv.2106.20055"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000019",
+  "doi": "https://doi.org/10.48550/arXiv.2106.20059",
+  "title": "Work for 2106.20059",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 29,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000019",
+   "doi": "https://doi.org/10.48550/arXiv.2106.20059"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000020",
+  "doi": "https://doi.org/10.48550/arXiv.2107.20060",
+  "title": "Work for 2107.20060",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 6,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000020",
+   "doi": "https://doi.org/10.48550/arXiv.2107.20060"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000021",
+  "doi": "https://doi.org/10.48550/arXiv.2110.20054",
+  "title": "Work for 2110.20054",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 12,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000021",
+   "doi": "https://doi.org/10.48550/arXiv.2110.20054"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000022",
+  "doi": "https://doi.org/10.48550/arXiv.2111.20052",
+  "title": "Work for 2111.20052",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 12,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000022",
+   "doi": "https://doi.org/10.48550/arXiv.2111.20052"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000023",
+  "doi": "https://doi.org/10.48550/arXiv.2112.20058",
+  "title": "Work for 2112.20058",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 40,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 10
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 10
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000023",
+   "doi": "https://doi.org/10.48550/arXiv.2112.20058"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000024",
+  "doi": "https://doi.org/10.48550/arXiv.2112.20063",
+  "title": "Work for 2112.20063",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 6,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000024",
+   "doi": "https://doi.org/10.48550/arXiv.2112.20063"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000025",
+  "doi": "https://doi.org/10.48550/arXiv.2201.20032",
+  "title": "Work for 2201.20032",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 8,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 2
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 2
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000025",
+   "doi": "https://doi.org/10.48550/arXiv.2201.20032"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000026",
+  "doi": "https://doi.org/10.48550/arXiv.2202.20028",
+  "title": "Work for 2202.20028",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 18,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000026",
+   "doi": "https://doi.org/10.48550/arXiv.2202.20028"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000027",
+  "doi": "https://doi.org/10.48550/arXiv.2203.20031",
+  "title": "Work for 2203.20031",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 5,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000027",
+   "doi": "https://doi.org/10.48550/arXiv.2203.20031"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000028",
+  "doi": "https://doi.org/10.48550/arXiv.2206.20033",
+  "title": "Work for 2206.20033",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 10,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 2
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 2
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000028",
+   "doi": "https://doi.org/10.48550/arXiv.2206.20033"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000029",
+  "doi": "https://doi.org/10.48550/arXiv.2209.20030",
+  "title": "Work for 2209.20030",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 21,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000029",
+   "doi": "https://doi.org/10.48550/arXiv.2209.20030"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000030",
+  "doi": "https://doi.org/10.48550/arXiv.2210.20029",
+  "title": "Work for 2210.20029",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 39,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 9
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 9
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000030",
+   "doi": "https://doi.org/10.48550/arXiv.2210.20029"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000031",
+  "doi": "https://doi.org/10.48550/arXiv.2301.20038",
+  "title": "Work for 2301.20038",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 2,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 0
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 0
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000031",
+   "doi": "https://doi.org/10.48550/arXiv.2301.20038"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000032",
+  "doi": "https://doi.org/10.48550/arXiv.2301.20043",
+  "title": "Work for 2301.20043",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000032",
+   "doi": "https://doi.org/10.48550/arXiv.2301.20043"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000033",
+  "doi": "https://doi.org/10.48550/arXiv.2302.20040",
+  "title": "Work for 2302.20040",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 9,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 2
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 2
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000033",
+   "doi": "https://doi.org/10.48550/arXiv.2302.20040"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000034",
+  "doi": "https://doi.org/10.48550/arXiv.2302.20041",
+  "title": "Work for 2302.20041",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 30,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000034",
+   "doi": "https://doi.org/10.48550/arXiv.2302.20041"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000035",
+  "doi": "https://doi.org/10.48550/arXiv.2303.08774",
+  "title": "Work for 2303.08774",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 2,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 0
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 0
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000035",
+   "doi": "https://doi.org/10.48550/arXiv.2303.08774"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000036",
+  "doi": "https://doi.org/10.48550/arXiv.2303.20022",
+  "title": "Work for 2303.20022",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 37,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 9
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 9
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000036",
+   "doi": "https://doi.org/10.48550/arXiv.2303.20022"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000037",
+  "doi": "https://doi.org/10.48550/arXiv.2303.20035",
+  "title": "Work for 2303.20035",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 13,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000037",
+   "doi": "https://doi.org/10.48550/arXiv.2303.20035"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000038",
+  "doi": "https://doi.org/10.48550/arXiv.2303.20037",
+  "title": "Work for 2303.20037",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 21,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000038",
+   "doi": "https://doi.org/10.48550/arXiv.2303.20037"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000039",
+  "doi": "https://doi.org/10.48550/arXiv.2303.20050",
+  "title": "Work for 2303.20050",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 33,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 8
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 8
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000039",
+   "doi": "https://doi.org/10.48550/arXiv.2303.20050"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000040",
+  "doi": "https://doi.org/10.48550/arXiv.2304.20044",
+  "title": "Work for 2304.20044",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 21,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000040",
+   "doi": "https://doi.org/10.48550/arXiv.2304.20044"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000041",
+  "doi": "https://doi.org/10.48550/arXiv.2304.20045",
+  "title": "Work for 2304.20045",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 32,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 8
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 8
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000041",
+   "doi": "https://doi.org/10.48550/arXiv.2304.20045"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000042",
+  "doi": "https://doi.org/10.5555/example.2023.001",
+  "title": "Work for 2305.10001",
+  "type": "article",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 5000,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1250
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1250
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000042",
+   "doi": "https://doi.org/10.5555/example.2023.001"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000043",
+  "doi": "https://doi.org/10.48550/arXiv.2305.20019",
+  "title": "Work for 2305.20019",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 17,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000043",
+   "doi": "https://doi.org/10.48550/arXiv.2305.20019"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000044",
+  "doi": "https://doi.org/10.48550/arXiv.2305.20048",
+  "title": "Work for 2305.20048",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 31,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000044",
+   "doi": "https://doi.org/10.48550/arXiv.2305.20048"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000045",
+  "doi": "https://doi.org/10.48550/arXiv.2305.20049",
+  "title": "Work for 2305.20049",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 19,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000045",
+   "doi": "https://doi.org/10.48550/arXiv.2305.20049"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000046",
+  "doi": "https://doi.org/10.48550/arXiv.2306.20023",
+  "title": "Work for 2306.20023",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 23,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000046",
+   "doi": "https://doi.org/10.48550/arXiv.2306.20023"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000047",
+  "doi": "https://doi.org/10.48550/arXiv.2306.20039",
+  "title": "Work for 2306.20039",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 26,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 6
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 6
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000047",
+   "doi": "https://doi.org/10.48550/arXiv.2306.20039"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000048",
+  "doi": "https://doi.org/10.48550/arXiv.2307.20027",
+  "title": "Work for 2307.20027",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 30,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000048",
+   "doi": "https://doi.org/10.48550/arXiv.2307.20027"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000049",
+  "doi": "https://doi.org/10.48550/arXiv.2308.20016",
+  "title": "Work for 2308.20016",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 23,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000049",
+   "doi": "https://doi.org/10.48550/arXiv.2308.20016"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000050",
+  "doi": "https://doi.org/10.48550/arXiv.2308.20018",
+  "title": "Work for 2308.20018",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000050",
+   "doi": "https://doi.org/10.48550/arXiv.2308.20018"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000051",
+  "doi": "https://doi.org/10.48550/arXiv.2308.20042",
+  "title": "Work for 2308.20042",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 25,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 6
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 6
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000051",
+   "doi": "https://doi.org/10.48550/arXiv.2308.20042"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000052",
+  "doi": "https://doi.org/10.48550/arXiv.2309.20017",
+  "title": "Work for 2309.20017",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 17,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 4
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 4
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000052",
+   "doi": "https://doi.org/10.48550/arXiv.2309.20017"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000053",
+  "doi": "https://doi.org/10.48550/arXiv.2309.20046",
+  "title": "Work for 2309.20046",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000053",
+   "doi": "https://doi.org/10.48550/arXiv.2309.20046"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000054",
+  "doi": "https://doi.org/10.48550/arXiv.2309.20047",
+  "title": "Work for 2309.20047",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000054",
+   "doi": "https://doi.org/10.48550/arXiv.2309.20047"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000055",
+  "doi": "https://doi.org/10.48550/arXiv.2309.20051",
+  "title": "Work for 2309.20051",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 24,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 6
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 6
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000055",
+   "doi": "https://doi.org/10.48550/arXiv.2309.20051"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000056",
+  "doi": "https://doi.org/10.48550/arXiv.2310.20025",
+  "title": "Work for 2310.20025",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 37,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 9
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 9
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000056",
+   "doi": "https://doi.org/10.48550/arXiv.2310.20025"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000057",
+  "doi": "https://doi.org/10.48550/arXiv.2310.20034",
+  "title": "Work for 2310.20034",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 20,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000057",
+   "doi": "https://doi.org/10.48550/arXiv.2310.20034"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000058",
+  "doi": "https://doi.org/10.48550/arXiv.2311.20013",
+  "title": "Work for 2311.20013",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 14,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000058",
+   "doi": "https://doi.org/10.48550/arXiv.2311.20013"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000059",
+  "doi": "https://doi.org/10.48550/arXiv.2311.20015",
+  "title": "Work for 2311.20015",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 37,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 9
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 9
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000059",
+   "doi": "https://doi.org/10.48550/arXiv.2311.20015"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000060",
+  "doi": "https://doi.org/10.48550/arXiv.2311.20026",
+  "title": "Work for 2311.20026",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000060",
+   "doi": "https://doi.org/10.48550/arXiv.2311.20026"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000061",
+  "doi": "https://doi.org/10.48550/arXiv.2311.20036",
+  "title": "Work for 2311.20036",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 24,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 6
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 6
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000061",
+   "doi": "https://doi.org/10.48550/arXiv.2311.20036"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000062",
+  "doi": "https://doi.org/10.48550/arXiv.2312.20014",
+  "title": "Work for 2312.20014",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 22,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 5
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 5
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000062",
+   "doi": "https://doi.org/10.48550/arXiv.2312.20014"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000063",
+  "doi": "https://doi.org/10.48550/arXiv.2312.20020",
+  "title": "Work for 2312.20020",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 28,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 7
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 7
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000063",
+   "doi": "https://doi.org/10.48550/arXiv.2312.20020"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000064",
+  "doi": "https://doi.org/10.48550/arXiv.2312.20021",
+  "title": "Work for 2312.20021",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 7,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 1
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 1
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000064",
+   "doi": "https://doi.org/10.48550/arXiv.2312.20021"
+  }
+ },
+ {
+  "id": "https://openalex.org/W3000000065",
+  "doi": "https://doi.org/10.48550/arXiv.2312.20024",
+  "title": "Work for 2312.20024",
+  "type": "preprint",
+  "publication_year": 2023,
+  "publication_date": "2023-01-01",
+  "cited_by_count": 14,
+  "counts_by_year": [
+   {
+    "year": 2025,
+    "cited_by_count": 3
+   },
+   {
+    "year": 2024,
+    "cited_by_count": 3
+   }
+  ],
+  "referenced_works_count": 30,
+  "primary_topic": {
+   "field": {
+    "display_name": "Computer Science"
+   },
+   "subfield": {
+    "display_name": "Artificial Intelligence"
+   },
+   "domain": {
+    "display_name": "Physical Sciences"
+   }
+  },
+  "ids": {
+   "openalex": "https://openalex.org/W3000000065",
+   "doi": "https://doi.org/10.48550/arXiv.2312.20024"
+  }
+ }
+]

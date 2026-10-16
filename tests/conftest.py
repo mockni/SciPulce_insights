@@ -1,6 +1,15 @@
 """Fixtures partagées par les tests SciPulse."""
 
+import json
+import os
+from pathlib import Path
+
 import pytest
+
+# Les tests ne publient pas d'événements dans Elasticsearch
+os.environ.setdefault("SCIPULSE_MONITORING", "0")
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 @pytest.fixture
@@ -32,17 +41,38 @@ def raw_article() -> dict:
 
 
 @pytest.fixture
-def hn_story() -> dict:
-    return {
-        "id": 40000001, "type": "story", "by": "alice", "time": 1717000000,
-        "title": "Attention Is All You Need (2017)", "url": "https://arxiv.org/abs/1706.03762v7",
-        "score": 120, "descendants": 45, "kids": [40000002, 40000003],
-    }
+def hn_items() -> list[dict]:
+    return json.loads((FIXTURES / "hn_items.json").read_text())
 
 
 @pytest.fixture
-def hn_comment() -> dict:
-    return {
-        "id": 40000002, "type": "comment", "by": "bob", "time": 1717000300, "parent": 40000001,
-        "text": "See also https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2005.14165 for GPT-3, really interesting.",
-    }
+def openalex_works() -> list[dict]:
+    return json.loads((FIXTURES / "openalex_works.json").read_text())
+
+
+@pytest.fixture
+def arxiv_lines() -> list[str]:
+    return [l for l in (FIXTURES / "arxiv_bronze.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+
+
+@pytest.fixture
+def expected() -> dict:
+    return json.loads((FIXTURES / "expected.json").read_text())
+
+
+@pytest.fixture
+def s3_lake(monkeypatch):
+    """Faux MinIO (moto) : les buckets du data lake, sans serveur."""
+    moto = pytest.importorskip("moto")
+    for var, value in [("AWS_ACCESS_KEY_ID", "test"), ("AWS_SECRET_ACCESS_KEY", "test"),
+                       ("AWS_DEFAULT_REGION", "us-east-1")]:
+        monkeypatch.setenv(var, value)
+    from src.lake import s3
+
+    with moto.mock_aws():
+        import boto3
+
+        client = boto3.client("s3", region_name="us-east-1")
+        monkeypatch.setattr(s3, "get_s3", lambda: client)   # restauré automatiquement après le test
+        s3.ensure_buckets()
+        yield s3

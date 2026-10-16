@@ -1,0 +1,59 @@
+[
+ {
+  "id": 41000001,
+  "type": "story",
+  "by": "alice",
+  "time": 1717000000,
+  "score": 900,
+  "descendants": 450,
+  "title": "GPT-4 Technical Report",
+  "url": "https://arxiv.org/abs/2303.08774v3",
+  "kids": [
+   41000101
+  ]
+ },
+ {
+  "id": 41000002,
+  "type": "story",
+  "by": "bob",
+  "time": 1717003600,
+  "score": 300,
+  "descendants": 120,
+  "title": "Scaling laws for sparse MoE",
+  "url": "https://arxiv.org/pdf/2305.10001.pdf"
+ },
+ {
+  "id": 41000003,
+  "type": "story",
+  "by": "carol",
+  "time": 1717007200,
+  "score": 40,
+  "descendants": 5,
+  "title": "Show HN: my side project",
+  "url": "https://example.com/project"
+ },
+ {
+  "id": 41000004,
+  "type": "story",
+  "by": "dan",
+  "time": 1717010800,
+  "score": 12,
+  "descendants": 3,
+  "title": "Ask HN: which papers do you read?",
+  "text": "I liked https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2303.08774 a lot"
+ },
+ {
+  "id": 41000005,
+  "type": "story",
+  "deleted": true,
+  "time": 1717014400
+ },
+ {
+  "id": 41000101,
+  "type": "comment",
+  "by": "erin",
+  "time": 1717000500,
+  "parent": 41000001,
+  "text": "Interesting, compare with <a href=\"https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;1706.03762\">this</a>"
+ }
+]

@@ -1,0 +1,17 @@
+{
+ "bronze_lines": 75,
+ "json_errors": 1,
+ "out_of_scope": 1,
+ "duplicates": 1,
+ "missing_abstract": 1,
+ "silver_arxiv_rows": 71,
+ "segments": {
+  "1706.03762": "academic_only",
+  "2303.08774": "viral_low_citations",
+  "2305.10001": "academic_and_viral"
+ },
+ "hn_score_total": {
+  "2303.08774": 912,
+  "2305.10001": 300
+ }
+}
