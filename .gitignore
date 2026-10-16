@@ -8,11 +8,9 @@ __pycache__/
 htmlcov/
 .env
 
-# Données (non versionnées — trop volumineuses)
+# Données (non versionnées — trop volumineuses ; le jeu de test est dans tests/fixtures/)
 data/*
-!data/arxiv-raw/
-data/arxiv-raw/*
-!data/arxiv-raw/.gitkeep
+!data/.gitkeep
 
 # Logs
 logs/*
@@ -33,5 +31,6 @@ gx/uncommitted/
 .idea/
 .vscode/
 .DS_Store
-*.ndjson.bak
-kibana_export.ndjson
+kibana/export.ndjson
+spark-warehouse/
+metastore_db/

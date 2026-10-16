@@ -1,16 +1,15 @@
 [project]
 name = "scipulse"
 version = "1.0.0"
-description = "SciPulse — veille scientifique ArXiv × Hacker News (ElasticStack, Airflow, dbt, Great Expectations)"
+description = "SciPulse & SciPulse Insights — veille scientifique Medallion (MinIO, Great Expectations, Spark, Elastic Stack, Airflow)"
 requires-python = ">=3.10,<3.13"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
-markers = [
-    "integration: tests nécessitant la stack Docker (Elasticsearch) — pytest -m integration",
-]
+markers = []
 filterwarnings = [
     "ignore::DeprecationWarning",
-    "ignore::UserWarning:great_expectations.*",
+    "ignore::UserWarning",
+    "ignore::FutureWarning",
 ]

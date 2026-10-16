@@ -1,37 +1,40 @@
 # =============================================================================
-#  SciPulse — Dépendances Python (exécution locale, Python 3.11 recommandé)
-#  Installation : pip install -r requirements.txt
+#  SciPulse & SciPulse Insights — dépendances Python (Python 3.11)
+#  pip install -r requirements.txt
+#  Le choix de chaque bibliothèque est justifié dans le README (section « Choix techniques »).
 # =============================================================================
 
-# --- Elasticsearch ---
-elasticsearch>=8.13,<9.0
+# --- Data lake (MinIO / S3) ---
+boto3>=1.34
 
-# --- Ingestion & HTTP ---
-requests>=2.31
-boto3>=1.34                    # Client MinIO/S3 (upload_to_minio.py)
-minio>=7.2                     # SDK MinIO (minio_client.py)
-
-# --- Data manipulation ---
+# --- Données tabulaires et Parquet (couche Silver) ---
 pandas>=2.1,<2.3               # Great Expectations 0.18 n'est pas compatible pandas 3
 numpy>=1.26,<2
-polars>=0.20                   # Alternative performante à Pandas
+pyarrow>=14,<18                # écriture Parquet avec schéma explicite (lu par Spark)
+
+# --- Sources ---
+requests>=2.31                 # API Hacker News, OpenAlex, téléchargement Kaggle
 
 # --- Qualité des données ---
-# L'API utilisée dans le TP 4 (context.sources..., checkpoints) est celle de GX 0.18
 great-expectations>=0.18.12,<1.0
 
-# --- NLP léger ---
-scikit-learn>=1.4              # TF-IDF, vectorisation
-# spacy>=3.7                   # Optionnel : NLP avancé (décommenter si besoin)
+# --- Couche Gold / serving ---
+elasticsearch>=8.13,<9.0
 
-# --- PostgreSQL / dbt ---
+# --- Traitement distribué (Module 2) ---
+pyspark==3.5.3
+
+# --- Entrepôt + transformations SQL ---
 psycopg2-binary>=2.9
 dbt-postgres>=1.7
 
+# --- Notebooks d'analyse (notebooks/) ---
+matplotlib>=3.8
+jupyterlab>=4.0
+
 # --- Tests ---
 pytest>=8.0
-pytest-cov>=5.0
+moto[s3]>=5.0                  # faux S3 en mémoire pour les tests de bout en bout
 
 # --- Utilitaires ---
 python-dotenv>=1.0
-tqdm>=4.66                     # Barres de progression
