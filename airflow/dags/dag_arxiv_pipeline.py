@@ -1,18 +1,17 @@
 """
-SciPulse — DAG principal : pipeline ArXiv (batch) — TP 7
-Orchestration complète :
+SciPulse — DAG principal : pipeline batch Medallion (ArXiv + citations + Spark)
 
-  init_indexes → download_arxiv_dump → validate_raw_arxiv → ingest_arxiv_logstash
-      → reindex_arxiv → clean_arxiv → transform_dbt → enrich_arxiv_python
-      → validate_enriched → collect_pipeline_metrics
+    init_indexes
+      → bronze_arxiv ─→ validate_bronze_arxiv (diagnostic, non bloquant)
+      → silver_arxiv ─→ validate_silver_arxiv (contrat, BLOQUANT)
+            ├─→ gold_index_arxiv          (Module 1 : arxiv-papers, exploration)
+            ├─→ transform_dbt             (ArXiv Silver → PostgreSQL → dbt seed/run/test)
+            └─→ bronze_citations → silver_citations → validate_silver_citations (BLOQUANT)
+                    → spark_insights      (Module 2 : jointure × 3, score → arxiv-papers-enriched)
+      → collect_pipeline_metrics (toujours exécutée, même après un échec)
 
-Par rapport à l'énoncé, deux tâches ont été ajoutées entre l'ingestion et dbt :
-`reindex_arxiv` (arxiv-papers-raw → arxiv-papers, mapping optimisé, TP 3) et
-`clean_arxiv` (nettoyage guidé par Great Expectations, TP 4) : sans elles, dbt et
-l'enrichissement travailleraient sur un index arxiv-papers vide ou périmé.
-
-Toutes les commandes s'exécutent dans le conteneur Airflow avec le virtualenv
-du pipeline (/opt/scipulse-venv, voir docker/airflow/Dockerfile).
+Le signal Hacker News est alimenté en continu par le DAG scipulse_hn_poller (couche hn-clean).
+Toutes les commandes utilisent le virtualenv du pipeline (/opt/scipulse-venv).
 """
 
 import os
@@ -26,11 +25,34 @@ from scipulse_callbacks import MONITORING_CALLBACKS
 
 PY = os.getenv("SCIPULSE_PYTHON", "python")
 DBT = os.getenv("SCIPULSE_DBT", "dbt")
+SPARK_SUBMIT = os.getenv("SPARK_SUBMIT", "spark-submit")
 HOME = "/opt/airflow"
-RAW_GLOB = f"{HOME}/data/arxiv-raw/*.json"
 
 # dbt écrit target/ et logs/ hors du dossier monté (évite les problèmes de droits)
 DBT_ENV = {"DBT_TARGET_PATH": "/tmp/dbt_target", "DBT_LOG_PATH": "/tmp/dbt_logs"}
+
+
+def python_task(task_id: str, module_args: str, **kwargs) -> BashOperator:
+    return BashOperator(task_id=task_id, bash_command=f"cd {HOME} && {PY} -m {module_args}", **kwargs)
+
+
+def tolerant_validation(task_id: str, module_args: str) -> BashOperator:
+    """Validation de diagnostic : un échec d'expectation (code 1) est documenté mais toléré."""
+    return BashOperator(
+        task_id=task_id,
+        bash_command=f"""
+            cd {HOME}
+            {PY} -m {module_args}
+            CODE=$?
+            if [ $CODE -eq 1 ]; then
+                echo "⚠️  Expectations en échec au stade Bronze : anomalies documentées (Data Docs),"
+                echo "    corrigées par le nettoyage Silver. Le pipeline continue."
+                exit 0
+            fi
+            exit $CODE
+        """,
+    )
+
 
 default_args = {
     "owner": "scipulse",
@@ -44,140 +66,75 @@ default_args = {
 with DAG(
     dag_id="scipulse_arxiv_pipeline",
     default_args=default_args,
-    description="Pipeline batch ArXiv : ingestion, qualité, transformation, enrichissement",
-    schedule_interval=None,  # Déclenchement manuel pour le TP
+    description="Batch Medallion : ArXiv & citations (Bronze → Silver) puis Spark (Gold)",
+    schedule_interval="@weekly",
     start_date=datetime(2024, 1, 1),
     catchup=False,
     max_active_runs=1,
-    dagrun_timeout=timedelta(hours=2),
-    tags=["scipulse", "arxiv", "batch"],
+    dagrun_timeout=timedelta(hours=6),
+    tags=["scipulse", "medallion", "batch", "spark"],
     doc_md=__doc__,
 ) as dag:
 
-    # ── 0. Index Elasticsearch (création des index absents, idempotent) ───
-    init_indexes = BashOperator(
-        task_id="init_indexes",
-        bash_command=f"cd {HOME} && {PY} -m src.utils.mappings",
-    )
+    init_indexes = python_task("init_indexes", "src.utils.mappings")
 
-    # ── 1. Données ArXiv disponibles ? (sinon : récupération depuis MinIO) ─
-    download_arxiv = BashOperator(
-        task_id="download_arxiv_dump",
-        bash_command=f"""
-            set -e
-            echo "📥 Vérification des données ArXiv..."
-            mkdir -p {HOME}/data/arxiv-raw
-            FILE_COUNT=$(ls -1 {RAW_GLOB} 2>/dev/null | wc -l)
-            if [ "$FILE_COUNT" -eq "0" ]; then
-                echo "   Aucun fichier local → récupération depuis la landing zone MinIO (s3://arxiv-raw)"
-                cd {HOME} && {PY} -m src.ingestion.upload_to_minio --download arxiv-cs-subset-100k.json --dest {HOME}/data/arxiv-raw || true
-                FILE_COUNT=$(ls -1 {RAW_GLOB} 2>/dev/null | wc -l)
-            fi
-            if [ "$FILE_COUNT" -eq "0" ]; then
-                echo "❌ Aucun fichier JSON trouvé dans {HOME}/data/arxiv-raw/"
-                echo "   Placez le dump ArXiv dans data/arxiv-raw/ (TP 1, étape 4)"
-                exit 1
-            fi
-            echo "✅ $FILE_COUNT fichier(s) trouvé(s)"
-            LINES=$(cat {RAW_GLOB} | wc -l)
-            echo "   $LINES articles au total"
-        """,
-    )
+    # ── 🥉 Bronze ────────────────────────────────────────────────────────
+    bronze_arxiv = python_task("bronze_arxiv", "src.bronze.arxiv", execution_timeout=timedelta(hours=2))
+    validate_bronze_arxiv = tolerant_validation("validate_bronze_arxiv", "src.quality.validate_arxiv --layer bronze")
 
-    # ── 2. Validation des données brutes AVANT ingestion (shift-left) ─────
-    validate_raw = BashOperator(
-        task_id="validate_raw_arxiv",
-        bash_command=f"""
-            echo "🔍 Validation des données brutes ArXiv..."
-            cd {HOME}
-            {PY} -m src.quality.validate_arxiv --stage raw --from-file "{RAW_GLOB}" --max 20000
-            EXIT_CODE=$?
-            if [ $EXIT_CODE -eq 2 ]; then
-                echo "❌ Validation impossible (fichiers illisibles)"; exit 1
-            elif [ $EXIT_CODE -ne 0 ]; then
-                echo "⚠️  Des validations ont échoué — vérifiez les Data Docs (gx/uncommitted/data_docs)"
-                echo "   Le pipeline continue (les échecs sont tolérés au stade raw)"
-            fi
-            echo "✅ Validation terminée"
-        """,
-    )
+    # ── 🥈 Silver ────────────────────────────────────────────────────────
+    silver_arxiv = python_task("silver_arxiv", "src.silver.arxiv", execution_timeout=timedelta(hours=2))
+    validate_silver_arxiv = python_task("validate_silver_arxiv", "src.quality.validate_arxiv --layer silver")
 
-    # ── 3. Ingestion via Logstash (qui surveille /data/arxiv-raw/) ────────
-    ingest_logstash = BashOperator(
-        task_id="ingest_arxiv_logstash",
-        bash_command=f"cd {HOME} && {PY} -m src.ingestion.check_logstash_ingestion --timeout 900 --fallback-python",
-        execution_timeout=timedelta(minutes=30),
-    )
-
-    # ── 3b. Réindexation vers le mapping optimisé (TP 3) ──────────────────
-    reindex = BashOperator(
-        task_id="reindex_arxiv",
-        bash_command=f"cd {HOME} && {PY} -m src.ingestion.reindex_arxiv --yes",
-    )
-
-    # ── 3c. Nettoyage guidé par la qualité (TP 4) ─────────────────────────
-    clean = BashOperator(
-        task_id="clean_arxiv",
-        bash_command=f"cd {HOME} && {PY} -m src.quality.clean_arxiv",
-    )
-
-    # ── 4. Transformation dbt (ES → PostgreSQL → dbt seed/run/test) ───────
+    # ── 🥇 Gold partielle (Module 1) + entrepôt dbt ──────────────────────
+    gold_index_arxiv = python_task("gold_index_arxiv", "src.gold.index_arxiv", execution_timeout=timedelta(hours=1))
     transform_dbt = BashOperator(
         task_id="transform_dbt",
         bash_command=f"""
             set -e
-            echo "⚙️  Chargement dans PostgreSQL + transformations dbt..."
-            cd {HOME}
-            echo "  [1/4] Chargement ES → PostgreSQL..."
-            {PY} -m src.transformation.load_to_postgres
+            cd {HOME} && {PY} -m src.transformation.load_to_postgres
             cd {HOME}/dbt
-            echo "  [2/4] dbt seed..."
             {DBT} seed --profiles-dir .
-            echo "  [3/4] dbt run..."
             {DBT} run --profiles-dir .
-            echo "  [4/4] dbt test..."
             {DBT} test --profiles-dir .
-            echo "✅ Transformations dbt terminées"
         """,
         env=DBT_ENV,
         append_env=True,
     )
 
-    # ── 5. Enrichissement Python (TF-IDF + croisement HN) ─────────────────
-    enrich_python = BashOperator(
-        task_id="enrich_arxiv_python",
-        bash_command=f"cd {HOME} && {PY} -m src.enrichment.enrich_arxiv --max 200000",
-        execution_timeout=timedelta(minutes=45),
-    )
+    # ── Module 2 : citations OpenAlex ────────────────────────────────────
+    bronze_citations = python_task("bronze_citations", "src.bronze.citations", execution_timeout=timedelta(hours=3))
+    silver_citations = python_task("silver_citations", "src.silver.citations")
+    validate_silver_citations = python_task("validate_silver_citations", "src.quality.validate_citations")
 
-    # ── 6. Validation des données enrichies (circuit breaker) ─────────────
-    validate_enriched = BashOperator(
-        task_id="validate_enriched",
+    # ── Module 2 : job Spark → Gold finale (elasticsearch-hadoop) ────────
+    # Mode client : le driver tourne ici, les executors sur spark-worker.
+    # spark.driver.host = IP du conteneur, joignable depuis les workers.
+    spark_insights = BashOperator(
+        task_id="spark_insights",
         bash_command=f"""
-            echo "✅ Validation des données enrichies..."
+            set -e
             cd {HOME}
-            {PY} -m src.quality.validate_arxiv --stage enriched --max 20000
+            DRIVER_IP=$(hostname -i | awk '{{print $1}}')
+            {SPARK_SUBMIT} \\
+              --master "$SPARK_MASTER" \\
+              --name scipulse-insights \\
+              --conf spark.driver.host="$DRIVER_IP" \\
+              --conf spark.driver.bindAddress=0.0.0.0 \\
+              --conf spark.executor.memory=1g \\
+              --conf spark.sql.shuffle.partitions=16 \\
+              --jars "$SPARK_EXTRA_JARS" \\
+              --driver-class-path "$(echo "$SPARK_EXTRA_JARS" | tr ',' ':')" \\
+              src/spark/insights_job.py --explain
         """,
+        execution_timeout=timedelta(hours=2),
     )
 
-    # ── 7. Métriques du pipeline (même si une tâche a échoué) ─────────────
-    collect_metrics = BashOperator(
-        task_id="collect_pipeline_metrics",
-        bash_command=f"cd {HOME} && {PY} -m src.utils.pipeline_metrics",
-        trigger_rule=TriggerRule.ALL_DONE,
-        retries=0,
-    )
+    collect_metrics = python_task("collect_pipeline_metrics", "src.monitoring.pipeline_metrics",
+                                  trigger_rule=TriggerRule.ALL_DONE, retries=0)
 
     # ── Dépendances ──────────────────────────────────────────────────────
-    (
-        init_indexes
-        >> download_arxiv
-        >> validate_raw
-        >> ingest_logstash
-        >> reindex
-        >> clean
-        >> transform_dbt
-        >> enrich_python
-        >> validate_enriched
-        >> collect_metrics
-    )
+    init_indexes >> bronze_arxiv >> validate_bronze_arxiv >> silver_arxiv >> validate_silver_arxiv
+    validate_silver_arxiv >> [gold_index_arxiv, transform_dbt, bronze_citations]
+    bronze_citations >> silver_citations >> validate_silver_citations >> spark_insights
+    [gold_index_arxiv, transform_dbt, spark_insights] >> collect_metrics

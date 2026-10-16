@@ -1,8 +1,10 @@
 """
-SciPulse — DAG secondaire : poller Hacker News (micro-batch) — TP 7
-Exécuté toutes les 5 minutes pour récupérer les derniers items HN.
+SciPulse — DAG micro-batch Hacker News (toutes les 5 minutes)
 
-  poll_hn_api → detect_arxiv_links → update_arxiv_hn_scores → collect_pipeline_metrics
+    bronze_hn → validate_bronze_hn (diagnostic) → silver_hn → validate_silver_hn (contrat)
+      → collect_pipeline_metrics
+
+Le Silver HN (hn-clean/items/hn-items.parquet) est lu par le job Spark du DAG principal.
 """
 
 import os
@@ -30,47 +32,43 @@ default_args = {
 with DAG(
     dag_id="scipulse_hn_poller",
     default_args=default_args,
-    description="Polling Hacker News : ingestion micro-batch + détection liens ArXiv",
-    schedule_interval="*/5 * * * *",  # Toutes les 5 minutes
+    description="Micro-batch Hacker News : API → Bronze (hn-raw) → Silver (hn-clean)",
+    schedule_interval="*/5 * * * *",
     start_date=datetime(2024, 1, 1),
     catchup=False,
     max_active_runs=1,
-    tags=["scipulse", "hacker-news", "streaming"],
+    tags=["scipulse", "medallion", "hacker-news", "micro-batch"],
     doc_md=__doc__,
 ) as dag:
 
-    # ── 1. Polling de l'API HN ──────────────────────────────────────────
-    # --with-comments : 3 commentaires de 1er niveau par nouvelle story (requêtes has_child)
-    # --archive       : copie brute des items dans MinIO (bucket hn-raw)
-    poll_hn = BashOperator(
-        task_id="poll_hn_api",
+    bronze_hn = BashOperator(
+        task_id="bronze_hn",
+        bash_command=f"cd {HOME} && {PY} -m src.bronze.hn --limit 100 --top 30 --with-comments 3",
+    )
+
+    validate_bronze_hn = BashOperator(
+        task_id="validate_bronze_hn",
         bash_command=f"""
-            set -e
-            echo "📡 Polling Hacker News..."
             cd {HOME}
-            {PY} -m src.ingestion.hn_poller --limit 100 --with-comments 3 --archive
-            echo "✅ Cycle de polling terminé"
+            {PY} -m src.quality.validate_hn --layer bronze --max 5000
+            CODE=$?
+            [ $CODE -eq 1 ] && echo "⚠️  Anomalies Bronze documentées (corrigées au Silver)" && exit 0
+            exit $CODE
         """,
     )
 
-    # ── 2. Détection des liens ArXiv (second passage + croisement corpus) ─
-    detect_links = BashOperator(
-        task_id="detect_arxiv_links",
-        bash_command=f"cd {HOME} && {PY} -m src.enrichment.detect_arxiv_links",
+    silver_hn = BashOperator(task_id="silver_hn", bash_command=f"cd {HOME} && {PY} -m src.silver.hn")
+
+    validate_silver_hn = BashOperator(
+        task_id="validate_silver_hn",
+        bash_command=f"cd {HOME} && {PY} -m src.quality.validate_hn --layer silver",
     )
 
-    # ── 3. Mise à jour des scores croisés dans arxiv-papers ──────────────
-    update_scores = BashOperator(
-        task_id="update_arxiv_hn_scores",
-        bash_command=f"cd {HOME} && {PY} -m src.enrichment.update_hn_scores",
-    )
-
-    # ── 4. Métriques (historique pour le dashboard de monitoring) ────────
     collect_metrics = BashOperator(
         task_id="collect_pipeline_metrics",
-        bash_command=f"cd {HOME} && {PY} -m src.utils.pipeline_metrics --quiet",
+        bash_command=f"cd {HOME} && {PY} -m src.monitoring.pipeline_metrics",
         trigger_rule=TriggerRule.ALL_DONE,
         retries=0,
     )
 
-    poll_hn >> detect_links >> update_scores >> collect_metrics
+    bronze_hn >> validate_bronze_hn >> silver_hn >> validate_silver_hn >> collect_metrics
