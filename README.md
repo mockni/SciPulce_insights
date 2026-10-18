@@ -5,7 +5,7 @@ Hacker News (micro-batch) et les citations OpenAlex sont ingérés bruts (🥉 B
 (🥈 Silver), puis croisés par un job **Spark** en une couche analytique (🥇 Gold) servie par **Elasticsearch**
 et restituée dans **Kibana**. L'ensemble est orchestré par **Airflow** et observé de bout en bout.
 
-**Équipe (projet de groupe)** : *Yakoub Kebaili* · *Prénom Nom* · *Prénom Nom* · *Prénom Nom* — Master Data & IA, HETIC (AIA01)
+Ahmed mokni — Master Data & IA, HETIC (AIA01)
 
 ```
                     🥉 BRONZE (MinIO, JSON Lines bruts)    🥈 SILVER (MinIO, Parquet validé)     🥇 GOLD (Elasticsearch)
